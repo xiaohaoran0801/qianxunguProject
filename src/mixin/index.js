@@ -36,9 +36,9 @@ Vue.mixin({
                 }
             }
             axios.post(api,formData,config,actionName).then(()=>{
-                close()
+                if(close){close()}
                 this.$message.success(message);
-                this.$store.dispatch(actionName)
+                if(actionName){this.$store.dispatch(actionName)}
             })
         }
     }

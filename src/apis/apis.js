@@ -3,7 +3,7 @@ const apis = {
     findMusicTypes:'music/findMusicTypes',
     addNewMusicType:'music/addNewMusicType',
     deleteMusicType:'music/deleteMusicType',
-    findDailyBackground:'daily/findDailyBackground',
+    findDailyBackground:'webapp/findDailyBackground',
     setDailyBackgroundLike:'daily/setDailyBackgroundLike',
     setDailyBackground:'daily/setDailyBackground',
     addNewMessage:'message/addNewMessage',

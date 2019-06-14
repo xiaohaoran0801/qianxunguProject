@@ -47,8 +47,8 @@ export default {
                     formData.append("type",this.typeInfo.type)
                     formData.append("icon",this.typeInfo.icon)
                     let api = this.$apis.addNewMusicType
-                    let actionName = 'findAllType'
                     let message = '新增类型成功'
+                    let actionName = 'findAllType'
                     let close = this.handleClose
                     this.formDatePost(formData,api,message,close,actionName)
                 }else{
