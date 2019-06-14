@@ -1,23 +1,46 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/Home.vue'
 
 Vue.use(Router)
 
 export default new Router({
+  mode:'history',
   routes: [
     {
-      path: '/',
-      name: 'home',
-      component: Home
+      path:'/',
+      redirect:'/home'
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
-    }
+      path: '/home',
+      name: 'home',
+      component: ()=>import(/* webpackChunkName: "home" */ '@/components/home/home'),
+      children:[
+        {
+          path:'dailyManage',name:'dailyManage',
+          component:()=>import(/* webpackChunkName: "dailyManage" */ '@/components/dailyManage/dailyManage')
+        },
+        {
+          path:'musicManage',name:'musicManage',
+          component:()=>import(/* webpackChunkName: "musicManage" */ '@/components/musicManage/musicManage')
+        },
+        {
+          path:'typeManage',name:'typeManage',
+          component:()=>import(/* webpackChunkName: "typeManage" */ '@/components/typeManage/typeManage')
+        },
+        {
+          path:'permissionManage',name:'permissionManage',
+          component:()=>import(/* webpackChunkName: "permissionManage" */ '@/components/permissionManage/permissionManage')
+        },
+        {
+          path:'roleManage',name:'roleManage',
+          component:()=>import(/* webpackChunkName: "roleManage" */ '@/components/roleManage/roleManage')
+        },
+      ]
+    },
+    {
+      path:'/login',
+      name:'login',
+      component: ()=>import(/* webpackChunkName: "login" */ '@/components/login/login'),
+    },
   ]
 })
