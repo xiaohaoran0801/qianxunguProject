@@ -1,24 +1,27 @@
 <template>
     <div id="setBG">
-        <el-form label-width="80px" :model="BGInfo.description" ref="BGInfo" :rules="rules">
+        <el-form label-width="80px" :model="description" ref="description" :rules="rules">
             <el-form-item label="图片">
-                <el-input type="file" v-model="BGInfo.dailyIMG" ref="dailyIMG"></el-input>
+                <input type="file" @change="getFile($event)" />
             </el-form-item>
             <el-form-item label="作者" prop="author">
-                <el-input v-model="BGInfo.description.author"></el-input>
-            </el-form-item>
-            <el-form-item label="内容" prop="content">
-                <el-input v-model="BGInfo.description.content"></el-input>
+                <el-input v-model="description.author"></el-input>
             </el-form-item>
             <el-form-item label="标题" prop="title">
-                <el-input v-model="BGInfo.description.title"></el-input>
+                <el-input v-model="description.title"></el-input>
+            </el-form-item>
+            <el-form-item label="内容" prop="content">
+                <el-input v-model="description.content"></el-input>
             </el-form-item>
         </el-form>
         <div class="block">
             <el-date-picker
-            v-model="BGInfo.daily"
+            v-model="daily"
             type="date"
-            placeholder="选择日期">
+            placeholder="选择日期"
+            format="yyyy 年 MM 月 dd 日"
+            value-format="yyyy-MM-dd"
+            >
             </el-date-picker>
         </div>
         <div id="button">
@@ -30,12 +33,10 @@
 export default {
     data(){
         return{
-            BGInfo:{
-                daily:'',
-                dailyIMG:'',
-                liked:0,
-                description:{}
-            },
+            dailyIMG:'',
+            daily:'',
+            liked:0,
+            description:{},
             rules:{
                 author:[
                     {required:true,message:'作者名不能为空',trigger:'blur'}
@@ -50,16 +51,19 @@ export default {
         }
     },
     methods:{
+        getFile(e){
+            this.dailyIMG = e.target.files[0]
+        },
         setBG(){
-            let files = this.$refs.dailyIMG.$refs.input.files
-            this.$refs['BGInfo'].validate((valid)=>{
+            this.$refs['description'].validate((valid)=>{
                 if(valid){
-                    let dailyIMG = files[0]
                     let form = new FormData();
                     let api = this.$apis.setDailyBackground
                     let message = '设置背景成功'
-                    form.append("type",this.BGInfo)
-                    form.append("icon",dailyIMG)
+                    form.append("dailyIMG",this.dailyIMG)
+                    form.append("daily",this.daily)
+                    form.append("liked",this.liked)
+                    form.append("description",JSON.stringify(this.description))
                     this.formDatePost(form,api,message)
                 }else{
                     return false

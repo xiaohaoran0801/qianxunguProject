@@ -14,7 +14,9 @@
                 <tr v-for="(item,index) in allMusic" :key="item._id+index">
                     <td>{{item.name}}</td>
                     <td>{{item.type}}</td>
-                    <td>{{item.icon}}</td>
+                    <td>
+                        <img class="icon" :src="item.icon" alt="">
+                    </td>
                     <td>{{item.pubDate}}</td>
                     <td>
                         <el-button type="danger" @click="deleteMusic(item._id)"><span>删除</span></el-button>
@@ -69,6 +71,10 @@ export default {
         th {
             border-bottom: 1px solid #cad9ea;
             color: #666;
+            height: 30px;
+        }
+        .icon{
+            width: 30px;
             height: 30px;
         }
     }

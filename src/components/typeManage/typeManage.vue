@@ -11,7 +11,9 @@
             <tbody>
                 <tr v-for="(item,index) in allType" :key="item.type+index">
                     <td>{{item.type}}</td>
-                    <td>{{item.icon}}</td>
+                    <td>
+                        <img class="icon" :src="item.icon" alt="">
+                    </td>
                     <td>
                         <el-button type="danger" @click="deleteType(item)"><span>删除</span></el-button>
                     </td>
@@ -63,6 +65,10 @@ export default {
         th {
             border-bottom: 1px solid #cad9ea;
             color: #666;
+            height: 30px;
+        }
+        .icon{
+            width: 30px;
             height: 30px;
         }
     }

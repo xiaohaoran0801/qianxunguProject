@@ -10,8 +10,8 @@
                 <el-form-item label="类型" prop="type">
                     <el-input v-model="typeInfo.type"></el-input>
                 </el-form-item>
-                <el-form-item label="图标" prop="icon">
-                    <el-input type="file" v-model="typeInfo.icon"></el-input>
+                <el-form-item label="图标">
+                    <input type="file" @change="getFile($event)" />
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -37,6 +37,9 @@ export default {
         }
     },
     methods:{
+        getFile(e){
+            this.typeInfo.icon = e.target.files[0]
+        },
         handleClose(){
             this.dialogVisible = !this.dialogVisible
         },

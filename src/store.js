@@ -8,8 +8,19 @@ const loadAction = (commit,payload,mutationName)=>{
   axios.get(payload.api,{pageNo:payload.pageNo,pageSize:payload.pageSize})
   .then((resp)=>{
     resp = resp.data;
+    console.log(resp)
     commit(mutationName,resp)
   })
+}
+const changeAddr = (payload)=>{
+  var baseUrl = "http://localhost:3000"
+  var dataArr = payload.data
+    var newDataArr = dataArr.map((item,index)=>{ 
+      var iconStr = baseUrl+item.icon.replace(/\\/g,'/');
+      item.icon = iconStr
+      return item
+    })
+  return newDataArr
 }
 export default new Vuex.Store({
   state: {
@@ -27,10 +38,10 @@ export default new Vuex.Store({
   },
   mutations: {
     FINDALLTYPE(state,payload){
-      state.allType = payload.data
+      state.allType = changeAddr(payload)
     },
     FINDALLMUSIC(state,payload){
-      state.allMusic = payload.data
+      state.allMusic = changeAddr(payload)
     },
   
   },

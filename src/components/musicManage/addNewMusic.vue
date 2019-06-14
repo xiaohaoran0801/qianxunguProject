@@ -1,7 +1,7 @@
 <template>
   <div id="addNewMusic">
     <el-button type="primary" @click="handleClose">新增</el-button>
-    <el-dialog title="提示" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
+    <el-dialog title="提示" :visible.sync="dialogVisible" width="50%" :before-close="handleClose">
       <el-form label-width="80px">
         <el-form-item label="类型">
           <el-radio-group v-model="musicInfo.musicType">
@@ -13,22 +13,24 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="音乐">
-          <el-input type="file" v-model="musicInfo.vedio" ref="uploadFile"></el-input>
+          <el-input type="file" v-model="musicInfo.vedio" ref="files"></el-input>
         </el-form-item>
         <el-form-item label="图标">
-          <el-input type="file" v-model="musicInfo.iconInput"></el-input>
+          <input type="file" @change="getIcon"/>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="handleClose">取 消</el-button>
         <el-button type="primary" @click="addNewMusic">确 定</el-button>
       </span>
+      <el-progress :text-inside="true" :stroke-width="16" :percentage="percent"></el-progress>
     </el-dialog>
   </div>
 </template>
 <script>
+import axios from 'axios'
 import SparkMD5 from 'spark-md5'
-import { mapGetters } from "vuex";
+import {mapGetters} from "vuex";
 export default {
   data() {
     return {
@@ -39,15 +41,20 @@ export default {
       fileSize: 0,
       file: null,
       hasUploaded: 0,
-      chunks: 0
+      chunks: 0,
+      iconInput:null,
+      percent:0,
     };
   },
   computed: {
     ...mapGetters(["allType"])
   },
   methods: {
+    getIcon(e){
+      this.iconInput = e.target.files[0]
+    },
     addNewMusic() {
-      let files = this.$refs["uploadFile"].$refs.input.files;
+      let files = this.$refs.files.$refs.input.files
       if (!files.length) {
         alert("当前没有选择文件");
         return false;
@@ -107,11 +114,10 @@ export default {
       let _this = this
       let baseUrl = "http://localhost:3000";
       return new Promise((resolve, reject) => {
-        let url = `${baseUrl}/music/checkFile?fileName=${fileName}&fileMd5Value=${fileMd5Value}&musicType=${this.musicInfo.musicType}`;
-        _this.$http.get(url,data => {
-          console.log(data)
-                resolve(data);
-            })
+        let url = `${baseUrl}/music/checkFile?fileName=${fileName}&fileMd5Value=${fileMd5Value}&musicType=${_this.musicInfo.musicType}`;
+        _this.$http.get(url).then((resp)=>{
+          resolve(resp.data);
+        })
       });
     },
     async checkAndUploadChunk(fileMd5Value, chunkList, filename, musicType) {
@@ -124,8 +130,10 @@ export default {
           await this.uploadChunk(i, fileMd5Value, this.chunks, filename, musicType);
           this.hasUploaded++;
           //计算百分比
-          let percent = Math.floor((this.hasUploaded / this.chunks) * 100) + "%";
-          this.width = percent;
+          this.percent = Math.floor((this.hasUploaded/this.chunks)*100);
+          if(this.percent===100){
+            this.handleClose()
+          }
         }
       }
     },
@@ -142,17 +150,22 @@ export default {
         form.append("fileMd5Value", fileMd5Value);
         form.append("filename", filename);
         form.append("musicType", _this.musicInfo.musicType);
-        if (i + 1 == chunks) {
-          let iconInput = document.querySelector("#iconInput").files[0];
+        if ((i + 1) == chunks) {
+          let iconInput = _this.iconInput
           form.append("iconInput", iconInput);
         }
-        var api = _this.$apis.uploadMusic,
-          close = _this.handleClose,
-          actionName = "findAllMusic";
-        _this.formDatePost(form, api, "上传成功", close, actionName);
+        var api = _this.$apis.uploadMusic;
+        let config = {
+              headers: {
+                  'Content-Type': 'multipart/form-data'
+              }
+          }
+        axios.post(api,form,config).then((resp)=>{
+          _this.$store.dispatch("findAllMusic")
+          resolve(resp)
+        })
       });
     },
-    mergeChunk() {},
     handleClose() {
       this.dialogVisible = !this.dialogVisible;
     }
