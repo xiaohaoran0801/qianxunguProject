@@ -4,7 +4,7 @@
         <el-dialog
             title="提示"
             :visible.sync="dialogVisible"
-            width="30%"
+            width="50%"
             :before-close="handleClose">
             <el-form label-width="80px" :model="typeInfo" ref="typeInfo" :rules="rules">
                 <el-form-item label="类型" prop="type">
@@ -54,6 +54,7 @@ export default {
                     let actionName = 'findAllType'
                     let close = this.handleClose
                     this.formDatePost(formData,api,message,close,actionName)
+                    this.$refs.typeInfo.resetFields()
                 }else{
                     return false
                 }

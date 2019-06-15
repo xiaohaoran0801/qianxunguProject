@@ -12,12 +12,31 @@ const loadAction = (commit,payload,mutationName)=>{
     commit(mutationName,resp)
   })
 }
-const changeAddr = (payload)=>{
+const spacilAction = (commit,payload,mutationName)=>{
+  axios.post(payload.api,{pageNo:payload.pageNo,pageSize:payload.pageSize})
+  .then((resp)=>{
+    resp = resp.data;
+    console.log(resp)
+    commit(mutationName,resp)
+  })
+}
+const changeTime = (time) =>{
+  var date = new Date(Number(time)),
+  Y = date.getFullYear() + '-',
+  M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-',
+  D = date.getDate() + ' ',
+  h = date.getHours() + ':',
+  m = date.getMinutes() + ':',
+  s = date.getSeconds();
+  return Y+M+D+h+m+s;
+}
+const changeData = (payload)=>{
   var baseUrl = "http://localhost:3000"
   var dataArr = payload.data
     var newDataArr = dataArr.map((item,index)=>{ 
       var iconStr = baseUrl+item.icon.replace(/\\/g,'/');
       item.icon = iconStr
+      item.pubDate = changeTime(item.pubDate)
       return item
     })
   return newDataArr
@@ -26,7 +45,8 @@ export default new Vuex.Store({
   state: {
     allType:[],
     allMusic:[],
-    checkDynamicCode:[]
+    allRoles:[],
+    allPermissions:[],
   },
   getters:{
     allType(state){
@@ -35,15 +55,26 @@ export default new Vuex.Store({
     allMusic(state){
       return state.allMusic
     },
+    allRoles(state){
+      return state.allRoles
+    },
+    allPermissions(state){
+      return state.allPermissions
+    }
   },
   mutations: {
     FINDALLTYPE(state,payload){
-      state.allType = changeAddr(payload)
+      state.allType = changeData(payload)
     },
     FINDALLMUSIC(state,payload){
-      state.allMusic = changeAddr(payload)
+      state.allMusic = changeData(payload)
     },
-  
+    FINDALLROLES(state,payload){
+      state.allRoles = payload.data
+    },
+    FINDALLPERMISSIONS(state,payload){
+      state.allPermissions = payload.data
+    }
   },
   actions: {
     findAllType({commit},payload={}){
@@ -54,6 +85,13 @@ export default new Vuex.Store({
       payload.api = apis.findMusic
       loadAction(commit,payload,'FINDALLMUSIC')
     },
-  
+    findAllRoles({commit},payload={}){
+      payload.api = apis.findRoles
+      loadAction(commit,payload,'FINDALLROLES')
+    },
+    findAllPermissions({commit},payload={}){
+      payload.api = apis.findPermission
+      spacilAction(commit,payload,'FINDALLPERMISSIONS')
+    },
   }
 })

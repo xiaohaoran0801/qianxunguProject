@@ -21,6 +21,22 @@
         <div id="findBGBTN">
             <el-button type='primary' @click="findBG">查询</el-button>
         </div>
+        <el-dialog
+            title="提示"
+            :visible.sync="dialogVisible"
+            width="50%"
+            :before-close="handleClose">
+            <ul>
+                <li v-for="(item,index) in data" :key="index+item._id">
+                    <img :src="item.imgURL" alt="">
+                    <p>{{item.daily}}</p>
+                </li>
+            </ul>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+            </span>
+            </el-dialog>
     </div>
 </template>
 <script>
@@ -29,13 +45,40 @@ export default {
         return{
             from:'',
             to:'',
+            data:{}
         }
     },
     methods:{
+        handleClose(){
+            this.dialogVisible = !this.dialogVisible
+        },
+        changeTime(time){
+            var date = new Date(Number(time)),
+            Y = date.getFullYear() + '-',
+            M = (date.getMonth()+1) + '-',
+            D = date.getDate() + ' ';
+            M = M<10?"0"+M : M
+            D = D<10?"0"+D : D 
+            return Y+M+D;
+        },
+        changeAddr(payload){
+            var baseUrl = "http://localhost:3000"
+            var dataArr = payload.data
+            var newDataArr = dataArr.map((item,index)=>{ 
+            var imgURL = baseUrl+item.imgURL.replace(/\\/g,'/');
+                item.imgURL = imgURL
+                item.daily = this.changeTime(item.daily)
+                return item
+            })
+            return newDataArr
+        },
         findBG(){
             this.$http.get(this.$apis.findDailyBackground,{from:this.from,to:this.to})
             .then((resp)=>{
-                console.log(resp)
+                resp = resp.data
+                this.handleClose()
+                this.data = this.changeAddr(resp)
+                console.log(this.data)
             })
         }
     }
@@ -61,6 +104,23 @@ export default {
         #findBGBTN{
             display: flex;
             justify-content: center;
+        }
+        ul{
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            li{
+                height: 150px;
+                list-style: none;
+                margin: 0 5px;
+                p{
+                    text-align: center
+                }
+            }
+        }
+        img{
+            width: 150px;
+            height: 150px;
         }
     }
 </style>

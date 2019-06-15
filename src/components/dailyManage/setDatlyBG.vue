@@ -65,6 +65,7 @@ export default {
                     form.append("liked",this.liked)
                     form.append("description",JSON.stringify(this.description))
                     this.formDatePost(form,api,message)
+                    this.$refs.description.resetFields()
                 }else{
                     return false
                 }

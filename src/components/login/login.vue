@@ -60,8 +60,10 @@ export default {
                             console.log(resp)
                             var token = resp.token
                             localStorage.setItem("token",token);
-                            var response = JSON.stringify(resp.response)
-                            localStorage.setItem("response",response);
+                            var permissions = JSON.stringify(resp.data.permissions)
+                            var roleList = JSON.stringify(resp.data.roleList)
+                            localStorage.setItem("permissions",permissions);
+                            localStorage.setItem("roleList",roleList);
                             if(resp.success){
                                 var query = this.$route.query
                                 if(!query.redirect){

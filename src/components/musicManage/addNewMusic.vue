@@ -13,7 +13,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="音乐">
-          <el-input type="file" v-model="musicInfo.vedio" ref="files"></el-input>
+          <input type="file" @change="getFile" />
         </el-form-item>
         <el-form-item label="图标">
           <input type="file" @change="getIcon"/>
@@ -39,6 +39,7 @@ export default {
       chunkSize: 1 * 1024 * 1024,
       musicInfo: {},
       fileSize: 0,
+      files:null,
       file: null,
       hasUploaded: 0,
       chunks: 0,
@@ -50,11 +51,14 @@ export default {
     ...mapGetters(["allType"])
   },
   methods: {
+    getFile(e){
+      this.files = e.target.files
+    },
     getIcon(e){
       this.iconInput = e.target.files[0]
     },
     addNewMusic() {
-      let files = this.$refs.files.$refs.input.files
+      let files = this.files
       if (!files.length) {
         alert("当前没有选择文件");
         return false;

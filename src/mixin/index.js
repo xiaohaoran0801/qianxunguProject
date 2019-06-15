@@ -1,6 +1,11 @@
 import Vue from 'vue'
 import axios from 'axios'
 Vue.mixin({
+    data(){
+        return{
+            dialogVisible:false
+        }
+    },
     methods: {
         pushView(item) {
             var name = item.name

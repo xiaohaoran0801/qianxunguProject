@@ -12,7 +12,14 @@ const apis = {
     findMusic:'music/findMusic',
     uploadMusic:'music/uploadMusic',
     signin:'signin',
-    checkDynamicCode:'checkDynamicCode'
+    checkDynamicCode:'checkDynamicCode',
+    findRoles:'system/role/findRoles',
+    findPermission:'system/permission/findPermission',
+    deleteRole:'system/role/deleteRole',
+    addNewRole:'system/role/addNewRole',
+    addNewPermission:'system/permission/addNewPermission',
+    deletePermission:'system/permission/deletePermission'
+
 }
 Vue.prototype.$apis = apis
 export default apis
